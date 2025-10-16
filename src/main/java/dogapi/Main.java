@@ -8,16 +8,13 @@ public class Main {
 
     public static void main(String[] args) {
         String breed = "hound";
-        BreedFetcher breedFetcher = new DogApiBreedFetcher();
-        List<String> subBreeds = breedFetcher.getSubBreeds(breed);
-        System.out.println("Sub Breeds: " + subBreeds);
-//        BreedFetcher breedFetcher = new CachingBreedFetcher(new BreedFetcherForLocalTesting());
-//        int result = getNumberOfSubBreeds(breed, breedFetcher);
-//        System.out.println(breed + " has " + result + " sub breeds");
-//
-//        breed = "cat";
-//        result = getNumberOfSubBreeds(breed, breedFetcher);
-//        System.out.println(breed + " has " + result + " sub breeds");
+        BreedFetcher breedFetcher = new CachingBreedFetcher(new BreedFetcherForLocalTesting());
+        int result = getNumberOfSubBreeds(breed, breedFetcher);
+        System.out.println(breed + " has " + result + " sub breeds");
+
+        breed = "cat";
+        result = getNumberOfSubBreeds(breed, breedFetcher);
+        System.out.println(breed + " has " + result + " sub breeds");
     }
 
     /**
@@ -29,7 +26,12 @@ public class Main {
      * returned by the fetcher
      */
     public static int getNumberOfSubBreeds(String breed, BreedFetcher breedFetcher) {
-        List<String> subBreeds = breedFetcher.getSubBreeds(breed);
-        return subBreeds.size();
+        try {
+            List<String> subBreeds = breedFetcher.getSubBreeds(breed);
+            return subBreeds.size();
+        }
+        catch (BreedFetcher.BreedNotFoundException e) {
+            return 0;
+        }
     }
 }
